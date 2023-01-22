@@ -100,7 +100,6 @@ public class AdminController {
                 boolRole = true;
             }
         }
-
         model.addAttribute("user", user);
         model.addAttribute("boolRole", boolRole);
         return "users/info_users";
