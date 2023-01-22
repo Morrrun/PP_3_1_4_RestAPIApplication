@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Пользователь</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/admin/}" th:object="${user}">
+
+    <input type="hidden" th:field="*{password}"/>
+
+    <input type="hidden" th:field="*{id}" id="id">
+
+    <label for="name">Enter name</label>
+    <br/>
+    <input type="text" th:field="*{firstName}" id="name"/>
+    <br/>
+    <br/>
+
+    <label for="last_name">Enter last name</label>
+    <br/>
+    <input type="text" th:field="*{lastName}" id="last_name"/>
+    <br/>
+    <br/>
+
+    <label for="email">Enter e-mail</label>
+    <br/>
+    <input type="text" th:field="*{email}" id="email"/>
+    <br/>
+    <br/>
+    <th:block th:if="*{password == null}">
+        <label  for="password">Enter password</label>
+        <br/>
+        <input  type="text" th:field="*{password}" id="password"/>
+        <br/>
+        <br/>
+    </th:block>
+    <label for="boolRole">Appoint admin</label>
+    <input type="checkbox" name="boolRole" th:checked="${boolRole}" id="boolRole"/>
+    <br/>
+    <br/>
+    <input type="submit" value="СОХРАНИТЬ"/>
+
+</form>
+</body>
+</html>
