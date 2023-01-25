@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.kata.spring.boot_security.demo.model.User;
-
-import javax.validation.Valid;
-
 import ru.kata.spring.boot_security.demo.service.user.UserService;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/auth")
@@ -46,7 +45,7 @@ public class AuthController {
         userValidator.validate(user, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return "redirect:/auth/registration";
+            return "/auth/registration";
         }
 
         userService.addUser(user);

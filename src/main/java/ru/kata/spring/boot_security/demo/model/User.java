@@ -1,15 +1,21 @@
 package ru.kata.spring.boot_security.demo.model;
 
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -34,6 +40,11 @@ public class User implements UserDetails {
     @NotBlank(message = "Укажите фамилию!")
     private String lastName;
 
+    @Column(name = "age", nullable = false)
+    @Max(value = 120, message = "Мы регистрируем людей в возрасте от 8 до 120 лет")
+    @Min(value = 8, message = "Мы регистрируем людей в возрасте от 8 до 120 лет")
+    @NotBlank(message = "Укажите возраст!")
+    private int age;
 
     @Column(name = "email", nullable = false, length = 100)
     @NotBlank(message = "Укажите Email!")
@@ -45,8 +56,11 @@ public class User implements UserDetails {
     @NotBlank(message = "Укажите пароль!")
     private String password;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,
-            mappedBy = "user")
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_role",
+               joinColumns = @JoinColumn(name = "user_id"),
+               inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
     public void addRoleToUser(Role role) {
@@ -54,7 +68,6 @@ public class User implements UserDetails {
             roles = new HashSet<>();
         }
         roles.add(role);
-        role.setUser(this);
     }
 
     @Override
@@ -85,5 +98,17 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

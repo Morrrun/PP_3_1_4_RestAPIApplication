@@ -5,16 +5,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.user.UserService;
+import ru.kata.spring.boot_security.demo.service.user.UserServiceImpl;
 
 @Component
 public class UserValidator implements Validator {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
     @Autowired
-    public UserValidator(UserService userService) {
-        this.userService = userService;
+    public UserValidator(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
     }
 
     @Override
@@ -26,9 +26,9 @@ public class UserValidator implements Validator {
     public void validate(Object target, Errors errors) {
         User userObj = (User) target;
 
-        User user = userService.loadUserByEmail(userObj.getEmail());
-
-        if (userObj.getFirstName().isEmpty()) {
+        User user = userServiceImpl.loadUserByEmail(userObj.getEmail());
+        //Валидируем имя
+        if (userObj.getFirstName().isBlank()) {
             errors.rejectValue("firstName", "", "Укажите имя!");
 
         } else if (userObj.getFirstName().length() > 30 || userObj.getFirstName().length() < 2) {
@@ -36,8 +36,8 @@ public class UserValidator implements Validator {
                     "Имя должно быть от 2-х до 30 символов длинной");
         }
 
-
-        if (userObj.getLastName().isEmpty()) {
+        //Валидируем фамилию
+        if (userObj.getLastName().isBlank()) {
             errors.rejectValue("lastName", "", "Укажите фамилию!");
 
         } else if (userObj.getLastName().length() > 30 || userObj.getLastName().length() < 2) {
@@ -45,7 +45,11 @@ public class UserValidator implements Validator {
                     "Фамилия должна быть от 2-х до 30 символов длинной");
         }
 
+        //Валидируем возраст
+        if (userObj.getAge() < 8 || userObj.getAge() > 120)
+            errors.rejectValue("age", "", "Мы регистрируем людей в возрасте от 8 до 120 лет");
 
+        //Валидируем email
         if (userObj.getEmail().isEmpty()) {
             errors.rejectValue("email", "", "Укажите email!");
 
@@ -58,7 +62,7 @@ public class UserValidator implements Validator {
                     "Email должнен быть от 10 до 30 символов длинной");
         }
 
-
+        //Валидируем пароль
         if (userObj.getPassword().isEmpty()) {
             errors.rejectValue("password", "", "Укажите пароль!");
 
