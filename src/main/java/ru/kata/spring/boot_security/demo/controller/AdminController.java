@@ -14,7 +14,6 @@ import ru.kata.spring.boot_security.demo.service.role.RoleService;
 import ru.kata.spring.boot_security.demo.service.role.RoleServiceImpl;
 import ru.kata.spring.boot_security.demo.service.user.UserService;
 import ru.kata.spring.boot_security.demo.service.user.UserServiceImpl;
-import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
 
@@ -52,41 +51,47 @@ public class AdminController {
     public String addUser(@ModelAttribute
                           @Valid User user,
                           @RequestParam(value = "role", required = false) String userRole) {
+        Role role = roleService.findByRole(userRole);
+        role.addUserToRole(user);
 
-        //Добавляем нового пользователя
-        if (user.getId() == 0) {
-            if (userRole.equals("ADMIN")) {
-                Role role = roleService.findByRole("ADMIN");
-                role.addUserToRole(user);
-            }
-            userService.addUser(user);
+        userService.addUser(user);
 
-            //Обновляем старого пользователя
-        } else {
-            User userWithRole = userService.getUser(user.getId());
-            Role role = roleService.findByRole("ADMIN");
-
-            //Производим проверку на наличие роли
-            if (userRole.equals("ADMIN") && !userWithRole.getRoles().contains(role)) {
-                role.addUserToRole(user);
-            } else if (!userRole.equals("ADMIN")) {
-                userWithRole.getRoles().remove(role);
-            }
-            user.setRoles(userWithRole.getRoles());
-
-            //Производим проверку на наличие изменений в пароле
-            if (!user.getPassword().isEmpty()) {
-                if (!userWithRole.getPassword().equals(user.getPassword())) {
-                    user.setPassword(passwordEncoder.encode(user.getPassword()));
-                }
-            } else {
-                user.setPassword(userWithRole.getPassword());
-            }
-
-            userService.updateUser(user);
-        }
         return "redirect:/admin/";
     }
+
+    @PatchMapping("/")
+    public String saveUser(@ModelAttribute
+                           @Valid User user,
+                           @RequestParam(value = "role", required = false) String userRole) {
+        //Получаю пользователя для дальнейшего сравнения
+        User userWithRole = userService.getUser(user.getId());
+        Role role = roleService.findByRole(userRole);
+
+
+        System.out.println(role.getRole());
+
+        //Производим проверку на наличие роли
+        if (!userWithRole.getRoles().contains(role)) {
+            role.addUserToRole(user);
+        } else if (!role.getRole().equals("ADMIN")) {
+            Role roleAdmin = roleService.findByRole("ADMIN");
+            userWithRole.getRoles().remove(roleAdmin);
+        }
+        user.setRoles(userWithRole.getRoles());
+
+        //Производим проверку на наличие изменений в пароле
+        if (!user.getPassword().isEmpty()) {
+            if (!userWithRole.getPassword().equals(user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
+        } else {
+            user.setPassword(userWithRole.getPassword());
+        }
+
+        userService.updateUser(user);
+        return "redirect:/admin/";
+    }
+
 
     @DeleteMapping("/remove")
     public String removeUser(@RequestParam(value = "id", required = false) Long id) {

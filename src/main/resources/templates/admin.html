@@ -62,8 +62,7 @@
         </div>
         <div class="col-10">
             <div class="tab-content" id="v-pills-tabContent">
-
-                <!---------Административная панель управления--------->
+<!--------------------------------------Административная панель управления--------------------------------------------->
                 <div class="tab-pane fade show active"
                      id="v-pills-admin"
                      role="tabpanel"
@@ -146,7 +145,8 @@
                                                  aria-labelledby="EditModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
-                                                        <!--Шапка модального окна-->
+
+                                                        <!------------Шапка модального окна-------------->
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="EditModalLabel">
                                                                 Изменить пользователя
@@ -156,14 +156,14 @@
                                                                     aria-label="Закрыть"></button>
                                                         </div>
 
-                                                        <form th:method="POST" th:action="@{/admin/}"
+                                                        <form th:method="PATCH" th:action="@{/admin/}"
                                                               th:with="add_user = ${user_var}"
                                                               th:object="${add_user}">
 
                                                             <div class="row">
                                                                 <div class="col-8 offset-md-2">
 
-                                                                    <!--Тело модального окна-->
+                                                                    <!------------Тело модального окна--------------->
                                                                     <div class="modal-body text-center">
 
                                                                         <div class="mb-3">
@@ -492,7 +492,7 @@
 
                 </div>
 
-                <!---------Информация о пользователе---------->
+<!-----------------------------------------Информация о пользователе--------------------------------------------------->
                 <div class="tab-pane fade"
                      id="v-pills-user"
                      role="tabpanel"
