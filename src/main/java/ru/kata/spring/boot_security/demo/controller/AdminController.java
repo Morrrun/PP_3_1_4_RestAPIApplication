@@ -63,16 +63,16 @@ public class AdminController {
     public String saveUser(@ModelAttribute
                            @Valid User user,
                            @RequestParam(value = "role", required = false) String userRole) {
+
         //Получаю пользователя для дальнейшего сравнения
         User userWithRole = userService.getUser(user.getId());
         Role role = roleService.findByRole(userRole);
 
-
-        System.out.println(role.getRole());
-
         //Производим проверку на наличие роли
         if (!userWithRole.getRoles().contains(role)) {
             role.addUserToRole(user);
+
+        //Проверяю выбор из селектора на наличие роли Админа для последующей установки соответсвующих прав
         } else if (!role.getRole().equals("ADMIN")) {
             Role roleAdmin = roleService.findByRole("ADMIN");
             userWithRole.getRoles().remove(roleAdmin);
