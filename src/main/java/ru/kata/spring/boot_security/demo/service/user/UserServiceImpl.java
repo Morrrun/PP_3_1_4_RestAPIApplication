@@ -10,7 +10,9 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import ru.kata.spring.boot_security.demo.service.role.RoleService;
+import ru.kata.spring.boot_security.demo.util.Exception.UserNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,14 +42,14 @@ public class UserServiceImpl implements UserService {
     public User getUser(long id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
-        return optionalUser.orElse(null);
+        return optionalUser.orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional
     public void addUser(User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
+        user.setCreatedAt(LocalDateTime.now());
         Role role = roleService.findByRole("USER");
         if (role == null) {
             role = new Role("USER");
@@ -61,6 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void updateUser(User user) {
+        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
     }
 

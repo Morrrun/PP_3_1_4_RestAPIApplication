@@ -1,32 +1,32 @@
-package ru.kata.spring.boot_security.demo.util;
+package ru.kata.spring.boot_security.demo.util.validators;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.user.UserServiceImpl;
+import ru.kata.spring.boot_security.demo.DTO.JSONObjectDTO;
+import ru.kata.spring.boot_security.demo.DTO.UserDTO;
+import ru.kata.spring.boot_security.demo.service.user.UserService;
 
 @Component
 public class UserValidator implements Validator {
-
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
 
     @Autowired
-    public UserValidator(UserServiceImpl userServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
+    public UserValidator(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return User.class.equals(clazz);
+        return UserDTO.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        User userObj = (User) target;
+        JSONObjectDTO jsonObjectDTO = (JSONObjectDTO) target;
+        UserDTO userObj = jsonObjectDTO.getUserDTO();
 
-        User user = userServiceImpl.loadUserByEmail(userObj.getEmail());
         //Валидируем имя
         if (userObj.getFirstName().isBlank()) {
             errors.rejectValue("firstName", "", "Укажите имя!");
@@ -53,24 +53,17 @@ public class UserValidator implements Validator {
         if (userObj.getEmail().isEmpty()) {
             errors.rejectValue("email", "", "Укажите email!");
 
-        } else if (user != null) {
-            errors.rejectValue("email", "",
-                    "Человек с таким email уже зарегестрирован!");
-
-        } else if (userObj.getEmail().length() < 10 || userObj.getEmail().length() > 30 ) {
+        } else if (userObj.getEmail().length() < 10 || userObj.getEmail().length() > 30) {
             errors.rejectValue("email", "",
                     "Email должнен быть от 10 до 30 символов длинной");
         }
 
         //Валидируем пароль
-        if (userObj.getPassword().isEmpty()) {
-            errors.rejectValue("password", "", "Укажите пароль!");
-
-        } else if (userObj.getPassword().length() > 100 || userObj.getPassword().length() < 5) {
-            errors.rejectValue("password", "",
-                    "Пароль должен быть от 5 до 100 символов длинной");
+        if(!userObj.getPassword().isBlank()) {
+            if (userObj.getPassword().length() > 100 || userObj.getPassword().length() < 5) {
+                errors.rejectValue("password", "",
+                        "Пароль должен быть от 5 до 100 символов длинной");
+            }
         }
-
-
     }
 }

@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.user.UserService;
-import ru.kata.spring.boot_security.demo.util.UserValidator;
+import ru.kata.spring.boot_security.demo.util.validators.RegistrationValidator;
 
 import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    private final UserValidator userValidator;
+    private final RegistrationValidator registrationValidator;
     private final UserService userService;
 
     @Autowired
-    public AuthController(UserValidator userValidator, UserService userService) {
-        this.userValidator = userValidator;
+    public AuthController(RegistrationValidator registrationValidator, UserService userService) {
+        this.registrationValidator = registrationValidator;
         this.userService = userService;
     }
 
@@ -42,7 +42,7 @@ public class AuthController {
                                       User user,
                                       BindingResult bindingResult) {
 
-        userValidator.validate(user, bindingResult);
+        registrationValidator.validate(user, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "/auth/registration";
