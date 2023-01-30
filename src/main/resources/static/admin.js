@@ -5,8 +5,8 @@ import {deleteUser} from "./functions/delete_user.js";
 import {createUser} from "./functions/create_user.js";
 
 window.onload = () => {
-    listUsersTable()
-    getRoles("New")
+    listUsersTable();
+    getRoles("New");
 }
 
 $(document).ready(() => {

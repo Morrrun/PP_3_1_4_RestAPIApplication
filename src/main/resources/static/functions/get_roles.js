@@ -23,7 +23,7 @@ export async function getRoles(method = null) {
             $('#selectorRolesNew').empty()
             selectorRoles = document.getElementById('selectorRoles' + method);
         }
-
+        console.log('Roles------------------------')
         const labelRoles = document.createElement('label');
         labelRoles.setAttribute("class", "form-label fw-bold");
 

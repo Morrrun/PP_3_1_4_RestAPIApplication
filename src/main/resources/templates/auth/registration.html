@@ -63,57 +63,7 @@
 
 
             </form>
-            <!--            <form th:method="POST" th:action="@{/auth/registration}" th:object="${user}">-->
-            <!--                <H3>Укажите данные</H3>-->
-
-            <!--                <div class="mb-3">-->
-            <!--                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('firstName')}"-->
-            <!--                         th:errors="*{firstName}"></div>-->
-            <!--                    <label for="firstName" class="form-label">Укажите имя пользователя</label>-->
-            <!--                    <input type="text" class="form-control" th:field="*{firstName}" id="firstName"/>-->
-
-            <!--                </div>-->
-
-            <!--                <div class="mb-3">-->
-            <!--                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('lastName')}"-->
-            <!--                         th:errors="*{lastName}"></div>-->
-            <!--                    <label for="last_name" class="form-label">Укажите фамилию пользователя</label>-->
-            <!--                    <input type="text" class="form-control" th:field="*{lastName}" id="last_name"/>-->
-
-            <!--                </div>-->
-
-            <!--                <div class="mb-3">-->
-            <!--                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('age')}"-->
-            <!--                         th:errors="*{age}"></div>-->
-            <!--                    <label for="age" class="form-label">Укажите возраст</label>-->
-            <!--                    <input type="number" class="form-control" th:field="*{age}" id="age" value=""/>-->
-
-            <!--                </div>-->
-
-            <!--                <div class="mb-3">-->
-            <!--                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}"-->
-            <!--                         th:errors="*{email}"></div>-->
-            <!--                    <label for="email" class="form-label">Укажите email</label>-->
-            <!--                    <input type="email" class="form-control" th:field="*{email}" id="email">-->
-
-            <!--                </div>-->
-
-            <!--                <div class="mb-3">-->
-            <!--                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('password')}"-->
-            <!--                         th:errors="*{password}"></div>-->
-            <!--                    <label for="password" class="form-label">Укажите пароль</label>-->
-            <!--                    <input type="password" class="form-control" th:field="*{password}" id="password">-->
-
-            <!--                </div>-->
-
-
-            <!--                <div class="d-grid gap-2">-->
-            <!--                    <button type="submit" class="btn btn-primary">ЗАРЕГЕСТРИРОВАТЬСЯ</button>-->
-            <!--                </div>-->
-
-            <!--            </form>-->
-
-            <form th:action="@{/auth/login}">
+            <form th:action="@{/}">
                 <div class="d-grid gap-2" style="margin-top: 10px">
                     <button type="submit" class="btn btn-primary">НАЗАД</button>
                 </div>
