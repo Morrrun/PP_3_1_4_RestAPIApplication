@@ -1,11 +1,18 @@
 package ru.kata.spring.boot_security.demo.DTO;
 
+import lombok.*;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
-
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
+@NoArgsConstructor
 public class UserDTO {
 
     private long id;
@@ -31,51 +38,6 @@ public class UserDTO {
     @NotBlank(message = "Укажите пароль!")
     private String password;
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    private Set<RoleDTO> roles;
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 }

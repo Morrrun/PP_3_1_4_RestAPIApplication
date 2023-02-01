@@ -6,7 +6,7 @@ const url = 'http://localhost:8080/users';
 export async function listUsersTable() {
 
     const usersTable = document.getElementById('usersTable')
-    console.log('Start "listUsersTable" function')
+    console.warn('Start "listUsersTable" function')
 
     $('#usersTable').empty();
     // отправляет запрос и получаем ответ
@@ -17,13 +17,11 @@ export async function listUsersTable() {
     // если запрос прошел нормально
     if (response.ok === true) {
         // получаем данные
-        const ObjectJSON = await response.json();
+        const userDTO = await response.json();
         let rows = usersTable;
-        ObjectJSON.forEach(user => {
-            console.log(user.userDTO);
-            console.log(user.rolesDTO);
+        userDTO.forEach(user => {
             // добавляем полученные элементы в таблицу
-            rows.append(row(user.userDTO, user.rolesDTO));
+            rows.append(row(user));
         });
     }
 }

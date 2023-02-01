@@ -1,60 +1,48 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
-import ru.kata.spring.boot_security.demo.DTO.JSONObjectDTO;
 import ru.kata.spring.boot_security.demo.DTO.RoleDTO;
 import ru.kata.spring.boot_security.demo.DTO.UserDTO;
-import ru.kata.spring.boot_security.demo.model.Role;
-import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.role.RoleService;
 import ru.kata.spring.boot_security.demo.service.user.UserService;
 import ru.kata.spring.boot_security.demo.util.Exception.UserNotCreatedException;
 
-import java.util.HashSet;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController("/api")
 public class RestAPIController {
+    private static final String ADMIN_ROLE = "hasRole('ADMIN')";
     private final Validator userValidator;
     private final Validator registrationValidator;
-    private final ModelMapper modelMapper;
-    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final RoleService roleService;
 
     @Autowired
     public RestAPIController(@Qualifier("userValidator") Validator userValidator,
-                             @Qualifier("registrationValidator") Validator registrationValidator, ModelMapper modelMapper, PasswordEncoder passwordEncoder,
+                             @Qualifier("registrationValidator") Validator registrationValidator,
                              UserService userService, RoleService roleService) {
         this.userValidator = userValidator;
         this.registrationValidator = registrationValidator;
-        this.modelMapper = modelMapper;
-        this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.roleService = roleService;
     }
 
     //Получаем весь список пользователей
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize(ADMIN_ROLE)
     @GetMapping("/users")
-    public ResponseEntity<List<JSONObjectDTO>> getUsers() {
-        final List<JSONObjectDTO> users = userService.getAllUsers().stream()
-                .map(this::converterToJSONObjectDTO)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<UserDTO>> getUsers() {
+        final List<UserDTO> users = userService.getAllUsersDTO();
 
 
         return !users.isEmpty()
@@ -63,52 +51,50 @@ public class RestAPIController {
     }
 
     //Получаем одного пользователя по ID
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize(ADMIN_ROLE)
     @GetMapping("/user/{id}")
-    public ResponseEntity<JSONObjectDTO> getUser(@PathVariable("id") int id) {
-        User user = userService.getUser(id);
+    public ResponseEntity<UserDTO> getUser(@PathVariable("id") int id) {
 
-        final JSONObjectDTO jsonObjectDTO = converterToJSONObjectDTO(user);
+        final UserDTO userDTO = userService.getUserDTO(id);
 
-        return new ResponseEntity<>(jsonObjectDTO, HttpStatus.OK);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
 
     //Добавление нового пользователя
     @PostMapping("/addUser")
     public ResponseEntity<HttpStatus> addUser(@RequestBody
-                                              JSONObjectDTO jsonObjectDTO,
+                                              @Valid
+                                              UserDTO userDTO,
                                               BindingResult bindingResult) {
 
-        registrationValidator.validate(jsonObjectDTO, bindingResult);
+        registrationValidator.validate(userDTO, bindingResult);
         detectedError(bindingResult);
 
-        userService.addUser(converterToUser(jsonObjectDTO));
+        userService.addUserDTO(userDTO);
 
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     //Обновление пользователя
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize(ADMIN_ROLE)
     @PatchMapping("/people/{id}")
     public ResponseEntity<?> updateUser(@PathVariable(name = "id") int id,
                                         @RequestBody
-                                        JSONObjectDTO jsonObjectDTO,
+                                        @Valid
+                                        UserDTO userDTO,
                                         BindingResult bindingResult) {
 
-        userValidator.validate(jsonObjectDTO, bindingResult);
+        userValidator.validate(userDTO, bindingResult);
         detectedError(bindingResult);
 
-        User user = converterToUser(jsonObjectDTO);
-        user.setId(id);
-
-        userService.updateUser(user);
+        userService.updateUserDTO(userDTO, id);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //Удаление пользователя
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize(ADMIN_ROLE)
     @DeleteMapping("/user/{id}")
     public ResponseEntity<?> delete(@PathVariable(name = "id") int id) {
         userService.deleteUser(id);
@@ -116,78 +102,14 @@ public class RestAPIController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize(ADMIN_ROLE)
     @GetMapping("/roles")
     public ResponseEntity<List<RoleDTO>> getRole() {
-        final List<RoleDTO> rolesDTO = roleService.getRoles().stream()
-                .map(role -> modelMapper.map(role, RoleDTO.class))
-                .toList();
+        final List<RoleDTO> rolesDTO = roleService.getRolesDTO();
 
         return !rolesDTO.isEmpty()
                 ? new ResponseEntity<>(rolesDTO, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    //Метод для преобразования в User
-    private User converterToUser(JSONObjectDTO jsonObjectDTO) {
-        User user = modelMapper.map(jsonObjectDTO.getUserDTO(), User.class);
-
-        if (user.getId() == 0) {
-            for (RoleDTO role : jsonObjectDTO.getRolesDTO()) {
-                if (role.getRole().equals("ADMIN")) {
-                    Role userRole = roleService.findByRole(role.getRole());
-                    user.addRoleToUser(userRole);
-                }
-            }
-        } else {
-            User checkUser = userService.getUser(user.getId());
-            user.setRoles(checkUser.getRoles());
-            Role userRole = null;
-
-            for (RoleDTO role : jsonObjectDTO.getRolesDTO()) {
-                if (role.getRole().equals("ADMIN")) {
-                    userRole = roleService.findByRole(role.getRole());
-                }
-            }
-            if (userRole != null) {
-                if (!checkUser.getRoles().contains(userRole)) {
-                    user.addRoleToUser(userRole);
-                }
-            } else {
-                userRole = roleService.findByRole("ADMIN");
-                if(checkUser.getRoles().contains(userRole)) {
-                    user.getRoles().remove(userRole);
-                }
-            }
-
-
-            if (!user.getPassword().isEmpty()) {
-                if (!checkUser.getPassword().equals(user.getPassword())) {
-                    user.setPassword(passwordEncoder.encode(user.getPassword()));
-                }
-            } else {
-                user.setPassword(checkUser.getPassword());
-            }
-
-        }
-        return user;
-    }
-
-    //Метод для преобразования в JSONObjectDTO
-    private JSONObjectDTO converterToJSONObjectDTO(User user) {
-        JSONObjectDTO obj = new JSONObjectDTO();
-        RoleDTO roleDTO;
-
-        obj.setUserDTO(modelMapper.map(user, UserDTO.class));
-        Set<RoleDTO> roles = new HashSet<>();
-        for (Role role : user.getRoles()) {
-            roleDTO = modelMapper.map(role, RoleDTO.class);
-            roles.add(roleDTO);
-        }
-
-        obj.setRolesDTO(roles);
-
-        return obj;
     }
 
     //Метод для валидации данных
@@ -206,6 +128,5 @@ public class RestAPIController {
             throw new UserNotCreatedException(errorMsg.toString());
         }
     }
-
 
 }

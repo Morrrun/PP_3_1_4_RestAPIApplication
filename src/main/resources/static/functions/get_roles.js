@@ -1,7 +1,7 @@
-
 const url = 'http://localhost:8080/roles';
+
 export async function getRoles(method = null) {
-    console.log('Start "getRoles" function')
+    console.warn('Begin "getRoles()" function');
 
     // отправляет запрос и получаем ответ
     const response = await fetch(url, {
@@ -18,8 +18,10 @@ export async function getRoles(method = null) {
         if (method == null) {
             $('#selectorRoles').empty()
             selectorRoles = document.getElementById('selectorRoles');
-        } else {
+        } else if (method === 'Del') {
             $('#selectorRolesDel').empty()
+            selectorRoles = document.getElementById('selectorRoles' + method);
+        } else {
             $('#selectorRolesNew').empty()
             selectorRoles = document.getElementById('selectorRoles' + method);
         }
@@ -30,10 +32,19 @@ export async function getRoles(method = null) {
         selectorRoles.append(labelRoles)
 
         const tagSelect = document.createElement("select");
-        tagSelect.setAttribute("multiple", "");
         tagSelect.setAttribute("class", "form-control");
         tagSelect.setAttribute("name", "role");
-        tagSelect.setAttribute("required", "required");
+
+        if (method == null) {
+            tagSelect.setAttribute("id", "role");
+        } else {
+            tagSelect.setAttribute("id", "role" + method);
+        }
+
+        if (method !== "Del") {
+            tagSelect.setAttribute("required", "required");
+        }
+        tagSelect.setAttribute("multiple", "");
         tagSelect.setAttribute("size", "2");
 
         arrRole.forEach(role => {
@@ -44,6 +55,8 @@ export async function getRoles(method = null) {
         });
 
         selectorRoles.appendChild(tagSelect);
+
+        console.warn('End "getRoles()" function');
 
     }
 

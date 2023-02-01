@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.service.role;
 
+import ru.kata.spring.boot_security.demo.DTO.RoleDTO;
 import ru.kata.spring.boot_security.demo.model.Role;
 
 import java.util.List;
@@ -7,5 +8,5 @@ import java.util.List;
 public interface RoleService {
     void saveRole(Role role);
     Role findByRole(String role);
-    List<Role> getRoles();
+    List<RoleDTO> getRolesDTO();
 }

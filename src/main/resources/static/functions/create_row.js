@@ -1,7 +1,8 @@
 import {getUser} from "./get_user_by_id.js";
 
-export function row(user, roles) {
-    console.log('Create row...')
+export function row(user) {
+    console.warn('Begin "row()" function')
+    console.log('Create row for user ' + user.firstName);
     const tr = document.createElement("tr");
     tr.setAttribute("data-rowid", user.id);
 
@@ -26,13 +27,14 @@ export function row(user, roles) {
     tr.append(emailTd);
 
     const rolesTd = document.createElement("td");
-    roles.forEach(role => {rolesTd.append(role.role + ' ');})
+    user.roles.forEach(role => {rolesTd.append(role.role + ' ');})
     tr.append(rolesTd);
 
-    //Кнопки управления
+    //Кнопки управления--------------------------------------------------
     const editTd = document.createElement("td");
 
     const editButton = document.createElement("button");
+
     editButton.setAttribute("type", "button");
     editButton.setAttribute("class", "btn btn-info");
     editButton.setAttribute("data-bs-toggle", "modal");
@@ -58,9 +60,13 @@ export function row(user, roles) {
         e.preventDefault();
         getUser(user.id, "Del");
     })
+
     deleteButton.append("Удалить");
     deleteTd.append(deleteButton);
+    // ---------------------------------------------------------------------
     tr.appendChild(deleteTd);
+
+    console.warn('End "row()" function');
 
     return tr;
 }

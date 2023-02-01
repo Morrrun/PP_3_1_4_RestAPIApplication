@@ -1,38 +1,33 @@
 package ru.kata.spring.boot_security.demo.util.validators;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import ru.kata.spring.boot_security.demo.DTO.JSONObjectDTO;
+import ru.kata.spring.boot_security.demo.DTO.UserDTO;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.user.UserService;
 import ru.kata.spring.boot_security.demo.service.user.UserServiceImpl;
 
 @Component
 public class RegistrationValidator implements Validator {
-    private final ModelMapper modelMapper;
-
     private final UserService userService;
 
     @Autowired
-    public RegistrationValidator(ModelMapper modelMapper, UserServiceImpl userServiceImpl) {
-        this.modelMapper = modelMapper;
+    public RegistrationValidator(UserServiceImpl userServiceImpl) {
         this.userService = userServiceImpl;
     }
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return User.class.equals(clazz);
+        return UserDTO.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        JSONObjectDTO jsonObjectDTO = (JSONObjectDTO) target;
-        User userObj = modelMapper.map(jsonObjectDTO.getUserDTO(), User.class);
+        UserDTO userObj = (UserDTO) target;
 
-        User user = userService.loadUserByEmail(userObj.getEmail());
+        User userWithEmail = userService.loadUserByEmail(userObj.getEmail());
 
         //Валидируем имя
         if (userObj.getFirstName().isBlank()) {
@@ -63,7 +58,7 @@ public class RegistrationValidator implements Validator {
         if (userObj.getEmail().isEmpty()) {
             errors.rejectValue("email", "", "Укажите email!");
 
-        } else if (user != null) {
+        } else if (userWithEmail != null) {
             errors.rejectValue("email", "",
                     "Человек с таким email уже зарегестрирован!");
 

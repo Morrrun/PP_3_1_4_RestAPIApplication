@@ -14,8 +14,7 @@ $(document).ready(() => {
         e.preventDefault();
         let form = document.forms["userEditForm"];
         let id = form.elements.id.value;
-        let role =  form.elements.role.value;
-        updateUser(id, form, role);
+        updateUser(id, form);
     });
 
     document.forms["userDeleteForm"].addEventListener("submit", e => {
@@ -28,7 +27,6 @@ $(document).ready(() => {
     document.forms["createNewUser"].addEventListener("submit", e => {
         e.preventDefault();
         let form = document.forms["createNewUser"];
-        let role =  form.elements.role.value;
-        createUser(form, role);
+        createUser(form);
     });
 })
