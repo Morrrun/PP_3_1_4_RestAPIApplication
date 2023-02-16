@@ -4,6 +4,7 @@ package ru.kata.spring.boot_security.demo.model;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.kata.spring.boot_security.demo.util.Exception.validators.anotation.UniqueEmail;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -13,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -41,8 +43,8 @@ public class User implements UserDetails {
     @Column(name = "age", nullable = false)
     @Max(value = 120, message = "Мы регистрируем людей в возрасте от 8 до 120 лет")
     @Min(value = 8, message = "Мы регистрируем людей в возрасте от 8 до 120 лет")
-    @NotBlank(message = "Укажите возраст!")
     private int age;
+
 
     @Column(name = "email", nullable = false, length = 100)
     @NotBlank(message = "Укажите Email!")
@@ -50,7 +52,7 @@ public class User implements UserDetails {
     private String email;
 
     @Column(name = "password", nullable = false, length = 100, unique = true)
-    @Size(min = 10, max = 100, message = "Пароль должен быть от 5 до 100 символов длинной")
+    @Size(min = 5, max = 100, message = "Пароль должен быть от 5 до 100 символов длинной")
     @NotBlank(message = "Укажите пароль!")
     private String password;
 
@@ -115,6 +117,20 @@ public class User implements UserDetails {
         return true;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id && age == user.age && firstName.equals(user.firstName) && lastName.equals(user.lastName) && email.equals(user.email) && password.equals(user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, age, email, password);
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -126,6 +142,7 @@ public class User implements UserDetails {
                 ", password='" + password + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", roles=" + roles +
                 '}';
     }
 }

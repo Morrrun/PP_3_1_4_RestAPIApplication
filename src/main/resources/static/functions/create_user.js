@@ -5,12 +5,18 @@ const url = "http://localhost:8080/addUser"
 export async function createUser(modalForm) {
     console.warn('Begin "editUser()" function');
     let role = $('#roleNew').val();
+
     const arrRoles = [];
-    for (let i = 0; i <= role.length; i++) {
-        if (role[i] !== undefined) {
-            arrRoles.push(role[i]);
-        }
-    }
+
+    role.forEach( el => {
+        let str = el.split('-');
+
+        arrRoles.push({
+            id: parseInt(str[0]),
+            role: str[1]
+        });
+    })
+
 
     const response = await fetch(url, {
         method: "POST",
@@ -30,6 +36,7 @@ export async function createUser(modalForm) {
             cleanForm();
             listUsersTable();
         } else {
+            cleanForm();
             const err = response.json();
             err.then(data => {
                 let arr = data['message'].split(';');

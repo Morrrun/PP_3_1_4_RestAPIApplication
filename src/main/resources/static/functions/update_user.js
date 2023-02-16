@@ -1,20 +1,22 @@
 import {listUsersTable} from "./users_table.js";
 
-const url = "http://localhost:8080/people/"
+const url = "http://localhost:8080/user"
 
-export async function updateUser(id, modalForm) {
+export async function updateUser(modalForm) {
     console.log('Begin function editUser...');
     let role = $('#role').val();
     const arrRoles = [];
-    for (let i = 0; i <= role.length; i++) {
-        if (role[i] !== undefined) {
-            arrRoles.push(role[i]);
-        }
-    }
 
-    console.error(arrRoles);
+    role.forEach( el => {
+        let str = el.split('-');
 
-    const response = await fetch(url + id, {
+        arrRoles.push({
+            id: parseInt(str[0]),
+            role: str[1]
+        });
+    })
+
+    const response = await fetch(url, {
         method: "PATCH",
         headers: {"Accept": "application/json", "Content-Type": "application/json"},
         body: JSON.stringify({

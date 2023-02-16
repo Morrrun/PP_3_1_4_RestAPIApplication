@@ -11,33 +11,25 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import ru.kata.spring.boot_security.demo.service.role.RoleService;
+import ru.kata.spring.boot_security.demo.util.Exception.UserNotFoundException;
+
+import java.util.Optional;
 
 
 @Service
-@Transactional(readOnly = true)
 public class UserDetailsServiceImpl implements UserDetailsService {
-   private final RoleService roleService;
    private final UserRepository userRepository;
    @Autowired
-   public UserDetailsServiceImpl(RoleService roleService, UserRepository userRepository) {
-      this.roleService = roleService;
+   public UserDetailsServiceImpl(UserRepository userRepository) {
       this.userRepository = userRepository;
    }
 
-   @Transactional
+//   @Transactional(readOnly = true)
    @Override
    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-      User user = userRepository.findByEmail(email);
+      Optional<User> user = userRepository.findByEmail(email);
 
-      if(user == null) {
-         throw new UsernameNotFoundException("Email not found!");
-      }
-
-      for (Role role : user.getRoles()) {
-         roleService.findByRole(role.getRole());
-      }
-
-      return user;
+      return user.orElseThrow(() -> {throw new UsernameNotFoundException("Пользователь с таким email не найден!");});
    }
 
 }

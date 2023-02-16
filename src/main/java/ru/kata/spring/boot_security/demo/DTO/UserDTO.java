@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.DTO;
 
 import lombok.*;
+import ru.kata.spring.boot_security.demo.util.Exception.validators.anotation.UniqueEmail;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -27,14 +28,15 @@ public class UserDTO {
 
     @Max(value = 120, message = "Мы регистрируем людей в возрасте от 8 до 120 лет")
     @Min(value = 8, message = "Мы регистрируем людей в возрасте от 8 до 120 лет")
-    @NotBlank(message = "Укажите возраст!")
     private int age;
 
+
     @NotBlank(message = "Укажите Email!")
+    @UniqueEmail
     @Size(min = 10, max = 30, message = "Email должнен быть от 10 до 30 символов длинной")
     private String email;
 
-    @Size(min = 10, max = 100, message = "Пароль должен быть от 5 до 100 символов длинной")
+    @Size(min = 5, max = 100, message = "Пароль должен быть от 5 до 100 символов длинной")
     @NotBlank(message = "Укажите пароль!")
     private String password;
 

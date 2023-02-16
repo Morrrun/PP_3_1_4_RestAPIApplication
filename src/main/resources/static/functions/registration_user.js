@@ -13,7 +13,7 @@ export async function registrationUser(modalForm) {
             age: parseInt(modalForm.age.value),
             email: modalForm.email.value,
             password: modalForm.password.value,
-            roles: null
+            roles: [{id: 1, role: 'USER'}]
         })
     }).then(response => {
         if (response.ok) {

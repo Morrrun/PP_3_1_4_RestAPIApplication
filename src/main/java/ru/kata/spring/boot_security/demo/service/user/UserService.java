@@ -4,12 +4,13 @@ import ru.kata.spring.boot_security.demo.DTO.UserDTO;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
     User loadUserByEmail(String email);
-    List<UserDTO> getAllUsersDTO();
-    UserDTO getUserDTO(long id);
-    void addUserDTO(UserDTO userDTO);
-    void updateUserDTO(UserDTO userDTO, int id);
+    Set<User> getAllUsers();
+    User getUser(long id);
+    void addUser(User user);
+    void updateUser(User user);
     void deleteUser(long id);
 }

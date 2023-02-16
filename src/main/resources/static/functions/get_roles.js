@@ -13,6 +13,8 @@ export async function getRoles(method = null) {
 
         let arrRole = await response.json();
 
+        console.log(arrRole);
+
         let selectorRoles;
 
         if (method == null) {
@@ -49,7 +51,7 @@ export async function getRoles(method = null) {
 
         arrRole.forEach(role => {
             const tagOption = document.createElement("option");
-            tagOption.setAttribute("value", role.role);
+            tagOption.setAttribute("value", role.id + "-" + role.role);
             tagOption.append(role.role);
             tagSelect.append(tagOption);
         });

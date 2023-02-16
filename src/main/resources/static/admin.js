@@ -13,8 +13,7 @@ $(document).ready(() => {
     document.forms["userEditForm"].addEventListener("submit", e => {
         e.preventDefault();
         let form = document.forms["userEditForm"];
-        let id = form.elements.id.value;
-        updateUser(id, form);
+        updateUser(form);
     });
 
     document.forms["userDeleteForm"].addEventListener("submit", e => {
