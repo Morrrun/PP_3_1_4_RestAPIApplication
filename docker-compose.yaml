@@ -1,19 +1,21 @@
-version: '3'
+version: '3.7'
 
 services:
   mysql:
-    image: 'mysql/mysql-server:latest'
+    image: 'mysql/mysql-server:8.0.21-1.1.17'
     container_name: 'mysql'
     ports:
-      - 33080:33080
+      - '3030:3306'
     environment:
-      - 'MYSQL_USER=root'
-      - 'MYSQL_PASSWORD=root'
-      - 'MYSQL_ROOT_PASSWORD=12345'
+      - 'MYSQL_ROOT_PASSWORD=root'
       - 'MYSQL_DATABASE=db_security'
 
   myapp:
+    depends_on:
+      - 'mysql'
     build: ./
-    container_name: java-app
+    container_name: 'java-app'
+    links:
+      - 'mysql'
     ports:
-      - 8080:8080
+      - '8080:8080'
