@@ -1,10 +1,8 @@
-package ru.kata.spring.boot_security.demo.util.Exception.validators;
+package ru.kata.spring.boot_security.demo.util.exception.validators;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Map;
 
 @Getter
 @Setter

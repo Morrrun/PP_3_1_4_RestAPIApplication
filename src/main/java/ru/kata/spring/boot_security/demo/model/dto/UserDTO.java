@@ -1,7 +1,7 @@
-package ru.kata.spring.boot_security.demo.DTO;
+package ru.kata.spring.boot_security.demo.model.dto;
 
 import lombok.*;
-import ru.kata.spring.boot_security.demo.util.Exception.validators.anotation.UniqueEmail;
+import ru.kata.spring.boot_security.demo.util.exception.validators.anotation.UniqueEmail;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

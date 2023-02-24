@@ -1,9 +1,8 @@
-package ru.kata.spring.boot_security.demo.util.Exception.validators.anotation;
+package ru.kata.spring.boot_security.demo.util.exception.validators.anotation;
 
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.constraints.Size;
 import java.lang.annotation.*;
 
 @Target(ElementType.FIELD)

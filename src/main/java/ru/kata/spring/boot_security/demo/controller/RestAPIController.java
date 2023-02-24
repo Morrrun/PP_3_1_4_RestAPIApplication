@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import ru.kata.spring.boot_security.demo.DTO.RoleDTO;
-import ru.kata.spring.boot_security.demo.DTO.UserDTO;
+import ru.kata.spring.boot_security.demo.model.dto.RoleDTO;
+import ru.kata.spring.boot_security.demo.model.dto.UserDTO;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.role.RoleService;
 import ru.kata.spring.boot_security.demo.service.user.UserService;

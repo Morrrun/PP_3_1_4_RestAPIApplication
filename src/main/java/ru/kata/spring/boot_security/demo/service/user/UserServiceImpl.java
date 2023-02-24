@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
-import ru.kata.spring.boot_security.demo.util.Exception.UserNotFoundException;
+import ru.kata.spring.boot_security.demo.util.exception.UserNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

@@ -1,7 +1,6 @@
-package ru.kata.spring.boot_security.demo.util.Exception.validators.anotation;
+package ru.kata.spring.boot_security.demo.util.exception.validators.anotation;
 
 import org.springframework.stereotype.Component;
-import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.user.UserService;
 
 import javax.validation.ConstraintValidator;

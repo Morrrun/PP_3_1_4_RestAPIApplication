@@ -4,7 +4,6 @@ package ru.kata.spring.boot_security.demo.model;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.kata.spring.boot_security.demo.util.Exception.validators.anotation.UniqueEmail;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
