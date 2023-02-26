@@ -7,4 +7,5 @@ import java.util.List;
 public interface RoleService {
     void saveRole(Role role);
     List<Role> getRoles();
+    void saveAllAndFlush(List<Role> roles);
 }
