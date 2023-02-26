@@ -39,7 +39,7 @@ public class DataInitService {
         user.setLastName("Alexsandrov");
         user.setEmail("mifon.199708@gmail.com");
         user.setAge(25);
-        user.setPassword(passwordEncoder.encode("12345"));
+        user.setPassword("12345");
         user.setRoles(new HashSet<>(roles));
 
         userService.addUser(user);
