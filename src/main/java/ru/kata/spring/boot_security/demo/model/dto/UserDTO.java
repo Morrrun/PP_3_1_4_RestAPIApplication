@@ -11,12 +11,12 @@ import java.util.Set;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@NoArgsConstructor
 public class UserDTO {
 
-    private long id;
+    private Long id;
 
     @NotBlank(message = "Укажите имя!")
     @Size(min = 2, max = 30, message = "Имя должно быть от 2-х до 30 символов длинной")
@@ -42,4 +42,12 @@ public class UserDTO {
 
     private Set<RoleDTO> roles;
 
+    public UserDTO(Long id, String firstName, String lastName, int age, String email, String password) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.password = password;
+    }
 }
