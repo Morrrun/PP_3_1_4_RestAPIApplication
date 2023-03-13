@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.model;
+package ru.kata.spring.boot_security.demo.model.entity;
 
 
 import lombok.*;
@@ -27,7 +27,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Column(name = "first_name", nullable = false, length = 50)
     @NotBlank(message = "Укажите имя!")

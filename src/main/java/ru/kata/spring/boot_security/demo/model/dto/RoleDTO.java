@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class RoleDTO {
-    private int id;
+    private Long id;
     private String role;
+
 }

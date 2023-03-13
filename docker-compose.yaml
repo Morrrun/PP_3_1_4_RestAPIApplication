@@ -4,12 +4,13 @@ services:
   mysql:
     image: 'mysql/mysql-server:8.0.21-1.1.17'
     container_name: 'mysql'
-    ports:
-      - '3030:3306'
+    expose:
+      - '3306'
     environment:
       - 'MYSQL_ROOT_PASSWORD=root'
       - 'MYSQL_DATABASE=db_security'
       - 'MYSQL_ROOT_HOST=%'
+      - 'MYSQL_ROOT_USER=root'
 
   myapp:
     depends_on:

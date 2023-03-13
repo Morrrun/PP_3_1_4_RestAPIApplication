@@ -1,6 +1,6 @@
 package ru.kata.spring.boot_security.demo.service.user;
 
-import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.model.entity.User;
 
 import java.util.Set;
 

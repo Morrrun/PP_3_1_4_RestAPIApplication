@@ -8,14 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import ru.kata.spring.boot_security.demo.dao.dto.UserDtoDao;
 import ru.kata.spring.boot_security.demo.model.dto.RoleDTO;
 import ru.kata.spring.boot_security.demo.model.dto.UserDTO;
-import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.model.entity.User;
 import ru.kata.spring.boot_security.demo.service.role.RoleService;
 import ru.kata.spring.boot_security.demo.service.user.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,12 +25,14 @@ import java.util.stream.Collectors;
 @Api(value = "API для взаимодействия с клиентом")
 public class RestAPIController {
     private static final String ADMIN_ROLE = "hasRole('ADMIN')";
+    private final UserDtoDao userDtoDao;
     private final UserService userService;
     private final RoleService roleService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public RestAPIController(UserService userService, RoleService roleService, ModelMapper modelMapper) {
+    public RestAPIController(UserDtoDao userDtoDao, UserService userService, RoleService roleService, ModelMapper modelMapper) {
+        this.userDtoDao = userDtoDao;
         this.userService = userService;
         this.roleService = roleService;
         this.modelMapper = modelMapper;
@@ -44,13 +48,24 @@ public class RestAPIController {
     @ApiResponses( value = {
             @ApiResponse( code = 200, message = "Пользователи успешно получены из БД", response = Set.class),
             @ApiResponse( code = 401, message = "Необходима аунтификация"),
-            @ApiResponse( code = 403, message = "Доступ закрыт для не автаризированного пользователя"),
+            @ApiResponse( code = 403, message = "Доступ закрыт для неавтаризированного пользователя"),
             @ApiResponse( code = 404, message = "Пользователей нет в БД"),
             @ApiResponse( code = 500, message = "Ошибка на стороне сервера")
     })
     @PreAuthorize(ADMIN_ROLE)
     @GetMapping("/users")
     public ResponseEntity<Set<UserDTO>> getUsers() {
+        Optional<UserDTO> userDTO3 = userDtoDao.getById(1L);
+        System.out.println(userDTO3.orElse(null));
+
+//        Set<UserDTO> userDTOS = userDtoDao.getAll();
+//        System.out.println(userDTOS);
+//
+//        for (UserDTO u : userDTOS) {
+//            System.out.println(u);
+//        }
+
+
         final Set<UserDTO> users = userService.getAllUsers().stream()
                 .map(user -> modelMapper.map(user, UserDTO.class))
                 .collect(Collectors.toSet());
