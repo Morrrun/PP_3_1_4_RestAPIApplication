@@ -37,19 +37,19 @@ public class UserDtoDaoImpl implements UserDtoDao {
     public Optional<UserDTO> getById(Long userId) {
         return ResultUtil.getSingleResultOrNull(entityManager.createQuery(
                 """
-                        SELECT new ru.kata.spring.boot_security.demo.model.dto.UserDTO(
+                        SELECT NEW ru.kata.spring.boot_security.demo.model.dto.UserDTO(
                             u.id,
                             u.firstName,
                             u.lastName,
                             u.age,
                             u.email,
                             u.password,
-                            u.roles
+                            COALESCE(u.roles, NULL)
                         )
                         FROM User u
-                        LEFT JOIN u.roles
+                        LEFT JOIN u.roles ur
                         WHERE u.id = :userId
-                         """, UserDTO.class
+                        """, UserDTO.class
         ).setParameter("userId", userId));
     }
 }
