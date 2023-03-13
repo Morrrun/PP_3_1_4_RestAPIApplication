@@ -2,7 +2,9 @@ package ru.kata.spring.boot_security.demo.dao.impl;
 
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.dao.dto.UserDtoDao;
-import ru.kata.spring.boot_security.demo.dao.util.ResultUtil;
+import ru.kata.spring.boot_security.demo.dao.util.ResultListUtil;
+import ru.kata.spring.boot_security.demo.dao.util.SingleResultUtil;
+import ru.kata.spring.boot_security.demo.model.dto.RoleDTO;
 import ru.kata.spring.boot_security.demo.model.dto.UserDTO;
 
 import javax.persistence.EntityManager;
@@ -20,22 +22,8 @@ public class UserDtoDaoImpl implements UserDtoDao {
     }
 
     @Override
-    public Set<UserDTO> getAll() {
-        return ResultUtil.getSetResultOrNull(entityManager.createQuery(
-                """
-                        SELECT new ru.kata.spring.boot_security.demo.model.dto.UserDTO(u.id, u.firstName, u.lastName, u.age, u.email, u.password,
-                          (SELECT new ru.kata.spring.boot_security.demo.model.dto.RoleDTO(r.id, r.role) FROM Role r WHERE r.id IN (
-                            SELECT ur.id FROM userR ur
-                          ))
-                        )
-                        FROM User u
-                        LEFT JOIN u.roles userR
-                        """, UserDTO.class));
-    }
-
-    @Override
     public Optional<UserDTO> getById(Long userId) {
-        return ResultUtil.getSingleResultOrNull(entityManager.createQuery(
+        Optional<UserDTO> userDTO = SingleResultUtil.getSingleResultOrNull(entityManager.createQuery(
                 """
                         SELECT NEW ru.kata.spring.boot_security.demo.model.dto.UserDTO(
                             u.id,
@@ -43,13 +31,27 @@ public class UserDtoDaoImpl implements UserDtoDao {
                             u.lastName,
                             u.age,
                             u.email,
-                            u.password,
-                            COALESCE(u.roles, NULL)
+                            u.password
                         )
                         FROM User u
-                        LEFT JOIN u.roles ur
                         WHERE u.id = :userId
                         """, UserDTO.class
         ).setParameter("userId", userId));
+
+        Set<RoleDTO> roleDTO = ResultListUtil.getSetResultOrNull(entityManager.createQuery(
+                """
+                        SELECT NEW ru.kata.spring.boot_security.demo.model.dto.RoleDTO(
+                            r.id,
+                            r.role
+                        )
+                        FROM User u
+                        LEFT JOIN u.roles r
+                        WHERE u.id = :userId
+                        """, RoleDTO.class
+        ).setParameter("userId", userId));
+
+        userDTO.get().setRoles(roleDTO);
+
+        return userDTO;
     }
 }

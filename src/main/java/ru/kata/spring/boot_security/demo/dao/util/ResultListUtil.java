@@ -4,26 +4,9 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
-public class ResultUtil {
-    public static <T> Optional<T> getSingleResultOrNull(TypedQuery<T> var) {
-        try {
-            return Optional.of(var.getSingleResult());
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
-
-    public static <T> Optional<T> getSingleResultOrNull(Query var) {
-        try {
-            return Optional.of((T) var.getSingleResult());
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
-
+public class ResultListUtil {
     public static <T> Set<T> getSetResultOrNull(TypedQuery<T> var) {
         try {
             return new HashSet<T>(var.getResultList());

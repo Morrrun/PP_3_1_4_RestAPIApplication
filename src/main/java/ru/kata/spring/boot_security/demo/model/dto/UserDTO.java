@@ -1,23 +1,18 @@
 package ru.kata.spring.boot_security.demo.model.dto;
 
 import lombok.*;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import ru.kata.spring.boot_security.demo.model.entity.Role;
 import ru.kata.spring.boot_security.demo.util.exception.validators.anotation.UniqueEmail;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class UserDTO {
 
@@ -47,19 +42,12 @@ public class UserDTO {
 
     private Set<RoleDTO> roles;
 
-
-    public UserDTO(Long id, String firstName, String lastName, int age, String email, String password, Set<Role> roles) {
+    public UserDTO(Long id, String firstName, String lastName, int age, String email, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.email = email;
         this.password = password;
-        this.roles = roles.stream().map(role -> {
-            RoleDTO roleDTO = new RoleDTO();
-            roleDTO.setRole(role.getRole());
-            roleDTO.setId(role.getId());
-            return roleDTO;
-        }).collect(Collectors.toSet());
     }
 }
