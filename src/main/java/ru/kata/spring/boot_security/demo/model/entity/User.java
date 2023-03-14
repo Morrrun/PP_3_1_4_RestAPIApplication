@@ -11,10 +11,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 
 @Getter @Setter
@@ -68,15 +68,15 @@ public class User implements UserDetails {
     @JoinTable(name = "user_role",
                joinColumns = @JoinColumn(name = "user_id"),
                inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private List<Role> roles;
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
     public void addRoleToUser(Role role) {
         if (roles == null) {
-            roles = new HashSet<>();
+            roles = new ArrayList<>();
         }
         roles.add(role);
     }

@@ -1,13 +1,13 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import io.swagger.annotations.*;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import ru.kata.spring.boot_security.demo.controller.converters.UserMapper;
 import ru.kata.spring.boot_security.demo.dao.dto.UserDtoDao;
 import ru.kata.spring.boot_security.demo.model.dto.RoleDTO;
 import ru.kata.spring.boot_security.demo.model.dto.UserDTO;
@@ -28,14 +28,12 @@ public class RestAPIController {
     private final UserDtoDao userDtoDao;
     private final UserService userService;
     private final RoleService roleService;
-    private final ModelMapper modelMapper;
 
     @Autowired
-    public RestAPIController(UserDtoDao userDtoDao, UserService userService, RoleService roleService, ModelMapper modelMapper) {
+    public RestAPIController(UserDtoDao userDtoDao, UserService userService, RoleService roleService) {
         this.userDtoDao = userDtoDao;
         this.userService = userService;
         this.roleService = roleService;
-        this.modelMapper = modelMapper;
     }
 
     //Получаем весь список пользователей
@@ -66,9 +64,7 @@ public class RestAPIController {
 //        }
 
 
-        final Set<UserDTO> users = userService.getAllUsers().stream()
-                .map(user -> modelMapper.map(user, UserDTO.class))
-                .collect(Collectors.toSet());
+        final Set<UserDTO> users = UserDTO.fromUserList(userService.getAllUsers());
 
 
         return !users.isEmpty()
@@ -93,7 +89,7 @@ public class RestAPIController {
     @GetMapping("/user/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable("id") int id) {
 
-        final UserDTO userDTO = modelMapper.map(userService.getUser(id), UserDTO.class);
+        final UserDTO userDTO = UserDTO.fromUser(userService.getUser(id));
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
@@ -114,7 +110,7 @@ public class RestAPIController {
     public ResponseEntity<HttpStatus> addUser(@Valid @RequestBody
                                               UserDTO userDTO) {
 
-        userService.addUser(modelMapper.map(userDTO, User.class));
+        userService.addUser(UserMapper.INSTANCE.userDtoToUser(userDTO));
 
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
@@ -136,7 +132,7 @@ public class RestAPIController {
     public ResponseEntity<Void> updateUser(@RequestBody
                                            UserDTO userDTO) {
 
-        userService.updateUser(modelMapper.map(userDTO, User.class));
+        userService.updateUser(UserMapper.INSTANCE.userDtoToUser(userDTO));
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -178,9 +174,7 @@ public class RestAPIController {
     @PreAuthorize(ADMIN_ROLE)
     @GetMapping("/roles")
     public ResponseEntity<List<RoleDTO>> getRole() {
-        final List<RoleDTO> rolesDTO = roleService.getRoles().stream()
-                .map(role -> modelMapper.map(role, RoleDTO.class))
-                .toList();
+        final List<RoleDTO> rolesDTO = RoleDTO.fromRoleList(roleService.getRoles());
 
         return !rolesDTO.isEmpty()
                 ? new ResponseEntity<>(rolesDTO, HttpStatus.OK)
