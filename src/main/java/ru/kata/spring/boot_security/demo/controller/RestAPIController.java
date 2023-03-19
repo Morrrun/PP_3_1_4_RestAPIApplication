@@ -8,18 +8,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import ru.kata.spring.boot_security.demo.controller.converters.UserMapper;
-import ru.kata.spring.boot_security.demo.dao.dto.UserDtoDao;
+import ru.kata.spring.boot_security.demo.dao.abstracts.dto.UserDtoDao;
 import ru.kata.spring.boot_security.demo.model.dto.RoleDTO;
 import ru.kata.spring.boot_security.demo.model.dto.UserDTO;
-import ru.kata.spring.boot_security.demo.model.entity.User;
-import ru.kata.spring.boot_security.demo.service.role.RoleService;
-import ru.kata.spring.boot_security.demo.service.user.UserService;
+import ru.kata.spring.boot_security.demo.service.abstracts.model.RoleService;
+import ru.kata.spring.boot_security.demo.service.abstracts.model.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController("/api")
 @Api(value = "API для взаимодействия с клиентом")
@@ -53,8 +50,8 @@ public class RestAPIController {
     @PreAuthorize(ADMIN_ROLE)
     @GetMapping("/users")
     public ResponseEntity<Set<UserDTO>> getUsers() {
-        Optional<UserDTO> userDTO3 = userDtoDao.getById(1L);
-        System.out.println(userDTO3.orElse(null));
+//        Optional<UserDTO> userDTO3 = userDtoDao.getById(1L);
+//        System.out.println(userDTO3.orElse(null));
 
 //        Set<UserDTO> userDTOS = userDtoDao.getAll();
 //        System.out.println(userDTOS);

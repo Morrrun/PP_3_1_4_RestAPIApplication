@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.dao.dto;
+package ru.kata.spring.boot_security.demo.dao.abstracts.dto;
 
 import ru.kata.spring.boot_security.demo.model.dto.UserDTO;
 

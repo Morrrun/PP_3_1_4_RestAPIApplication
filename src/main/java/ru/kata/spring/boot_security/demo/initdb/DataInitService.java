@@ -6,11 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.entity.Role;
 import ru.kata.spring.boot_security.demo.model.entity.User;
-import ru.kata.spring.boot_security.demo.service.role.RoleService;
-import ru.kata.spring.boot_security.demo.service.user.UserService;
+import ru.kata.spring.boot_security.demo.service.abstracts.model.RoleService;
+import ru.kata.spring.boot_security.demo.service.abstracts.model.UserService;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Service
